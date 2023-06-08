@@ -34,3 +34,24 @@
   font-size: 9vw;
   line-height: 9vw;
 }
+
+.forecast > * {
+  display: inline-block;
+  text-align: center;
+  padding-right: 0.5vw;
+}
+
+.forecast .temp {
+  font-size: 2vw;
+  line-height: 2vw;
+}
+
+.forecast .weather {
+  font-size: 1vw;
+  line-height: 1vw;
+}
+
+.forecast .time {
+  font-size: 1vw;
+  line-height: 1vw;
+}

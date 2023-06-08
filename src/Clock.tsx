@@ -7,7 +7,7 @@ export default function Clock() {
 
     setTimeout(() => {
         setTime(new Date());
-    }, 1000);
+    }, 1000 * 15);
 
     return(
     <>

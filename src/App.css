@@ -1,4 +1,5 @@
 .main-container {
+  padding: 1vw;
   display: grid;
   grid-template-columns: 25% 50% 25%;
   grid-template-areas: 'left middle right';
@@ -8,15 +9,28 @@
 
 .left {
   grid-area: left;
-  background-color: red;
 }
 
 .middle {
   grid-area: middle;
-  background-color: green;
 }
 
 .right {
   grid-area: right;
-  background-color: blue;
+  text-align: right;
+}
+
+.time {
+  font-size: 9vw;
+  line-height: 9vw;
+}
+
+.date {
+  font-size: 3vw;
+  line-height: 3vw;
+}
+
+.current-temp {
+  font-size: 9vw;
+  line-height: 9vw;
 }

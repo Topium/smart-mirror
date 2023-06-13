@@ -129,3 +129,17 @@ export interface Forecast {
     gust: number,
     iconClass: string,
 }
+
+export interface SahkotinPowerData {
+    "prices": SahkotinPowerDatum[],
+}
+
+interface SahkotinPowerDatum {
+    "date": string,
+    "value": number
+}
+
+export interface PowerDatum {
+    "date": number,
+    "value": number
+}

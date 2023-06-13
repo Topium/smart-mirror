@@ -1,7 +1,7 @@
 .main-container {
   padding: 1vw;
   display: grid;
-  grid-template-columns: 25% 50% 25%;
+  grid-template-columns: 33% 34% 33%;
   grid-template-areas: 'left middle right';
   justify-content: space-between;
   align-content: start;
@@ -21,37 +21,44 @@
 }
 
 .time {
-  font-size: 9vw;
-  line-height: 9vw;
+  font-size: 10vw;
+  line-height: 12vw;
 }
 
 .date {
-  font-size: 3vw;
+  font-size: 3.5vw;
   line-height: 3vw;
 }
 
 .current-weather {
+  font-size: 10vw;
+  line-height: 12vw;
+  margin-bottom: 1vw;
+}
+
+.current-weather > .wi {
   font-size: 9vw;
-  line-height: 9vw;
+  margin-right: 1vw;
 }
 
 .forecast > * {
   display: inline-block;
   text-align: center;
-  padding-right: 0.5vw;
+  padding-right: 1vw;
 }
 
 .forecast .temp {
-  font-size: 2vw;
-  line-height: 2vw;
+  font-size: 2.5vw;
+  line-height: 4vw;
+  font-weight: 600;
 }
 
 .forecast .weather {
-  font-size: 1vw;
-  line-height: 1vw;
+  font-size: 4vw;
+  line-height: 5vw;
 }
 
 .forecast .time {
-  font-size: 1vw;
-  line-height: 1vw;
+  font-size: 2vw;
+  line-height: 3vw;
 }

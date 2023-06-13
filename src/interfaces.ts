@@ -143,3 +143,8 @@ export interface PowerDatum {
     "date": number,
     "value": number
 }
+
+export interface GraphDatum {
+    "x": number,
+    "y": number
+}

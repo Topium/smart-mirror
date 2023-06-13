@@ -119,6 +119,10 @@ export default function Weather() {
     useEffect(() => {
         fetchWeather();
         fetchForecast();
+        setInterval(() => {
+          fetchWeather();
+          fetchForecast();
+        }, 60 * 60 * 1000)
     }, [])
 
     return (

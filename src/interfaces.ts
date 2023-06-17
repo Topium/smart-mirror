@@ -134,7 +134,7 @@ export interface SahkotinPowerData {
     "prices": SahkotinPowerDatum[],
 }
 
-interface SahkotinPowerDatum {
+export interface SahkotinPowerDatum {
     "date": string,
     "value": number
 }

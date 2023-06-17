@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { GraphDatum, PowerDatum, SahkotinPowerData } from "./interfaces"
+import { powerDataGenerator } from "./powerTestData"
 
 export default function Power() {
     // const [powerData, setPowerData] = useState<PowerDatum[]>([]);
@@ -17,7 +18,8 @@ export default function Power() {
 
     const fetchPowerData = function(start: string, end: string) {
         const powerUrl = 'https://sahkotin.fi/prices?vat';
-        fetch(powerUrl + '&start=' + start + "&end=" + end)
+        // fetch(powerUrl + '&start=' + start + "&end=" + end)
+        powerDataGenerator(-10, 150)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -26,7 +28,7 @@ export default function Power() {
                     return null;
                 }
             })
-            .then((result: SahkotinPowerData) => {
+            .then((result: SahkotinPowerData | null) => {
                 if (result !== null) {
                     const graphHeight = svgRef.current ? svgRef.current.clientHeight : 0;
                     const graphWidth = svgRef.current ? svgRef.current.clientWidth : 0;

@@ -71,11 +71,35 @@
   margin-top: 2vw;
 }
 
-.graph-axis {
-  stroke: rgba(255, 255, 255, 0.25);
+.x-axes .graph-axis {
+  opacity: 0.5;
+  stroke: #888;
+}
+
+.y-axes .graph-axis {
+  opacity: 0.5;
+  stroke: #000;
+}
+
+.graph-axis.strong {
+  stroke: #FFF;
 }
 
 .graph-line {
   stroke: #FFF;
   fill: none;
+}
+
+.graph-line.realized {
+  fill: white;
+}
+
+.zero-background {
+  fill: black;
+}
+
+.zero-mask {
+  opacity: 0.67;
+  fill: red;
+  mix-blend-mode: multiply;
 }

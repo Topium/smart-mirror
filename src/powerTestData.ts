@@ -8,7 +8,7 @@ export function powerDataGenerator(min = 0, max = 100): Promise<{ok: string, sta
         prices.push(
             {
                 date: new Date(thisMorning + i * 1000 * 60 * 60).toISOString(),
-                value: Math.sin(Math.PI / 16 * i) * diff + min,
+                value: Math.sin(Math.PI / 16 * i) * diff / 2 + diff / 2 + min,
             }
         )
     }

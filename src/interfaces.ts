@@ -148,3 +148,11 @@ export interface GraphDatum {
     "x": number,
     "y": number
 }
+
+export interface GraphDims {
+    width: number;
+    height: number;
+    paddingLeft: number;
+    paddingBottom: number;
+    zeroY: number;
+}

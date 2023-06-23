@@ -1,15 +1,10 @@
 import { useEffect, useRef, useState } from "react"
-import { GraphDatum, PowerDatum, SahkotinPowerData } from "./interfaces"
+import { SahkotinPowerData } from "./interfaces"
 import { powerDataGenerator } from "./powerTestData"
+import PowerService from "./power.service";
 
 export default function Power() {
-    // const [powerData, setPowerData] = useState<PowerDatum[]>([]);
-    // const [graphData, setGraphData] = useState<GraphDatum[]>([]);
     const [error, setError] = useState<string>('')
-    // const [minValue, setMinValue] = useState(0);
-    // const [maxValue, setMaxValue] = useState(30);
-    // const [minDate, setMinDate] = useState(0);
-    // const [maxDate, setMaxDate] = useState(1);
     const [xAxes, setXAxes] = useState<number[]>([])
     const [yAxes, setYAxes] = useState<number[]>([])
     const [powerRealized, setPowerRealized] = useState<string>('')
@@ -32,92 +27,31 @@ export default function Power() {
             })
             .then((result: SahkotinPowerData | null) => {
                 if (result !== null) {
+                    const powerData = PowerService.processPowerData(result);
+
                     const graphHeight = svgRef.current ? svgRef.current.clientHeight : 0;
                     const graphWidth = svgRef.current ? svgRef.current.clientWidth : 0;
-                    const powerData = processPowerData(result);
-                    const realizedPowerData = powerData.filter((d) => d.date < new Date().getTime())
-                    const forecastPowerData = powerData.filter((d) => d.date >= new Date().getTime() - 1000 * 60 * 60)
-                    console.log('realizedPowerData', realizedPowerData)
-                    console.log('forecastPowerData', forecastPowerData)
                     const minValue = Math.floor(Math.min(...powerData.map(d => d.value)) / 10) * 10;
-                    const maxValue = Math.max(...powerData.map(d => d.value)) > 30 ?
-                        Math.ceil(Math.max(...powerData.map(d => d.value)) / 10) * 10 :
-                        30;
+                    const maxValue = Math.max(...powerData.map(d => d.value)) > 30 ? Math.ceil(Math.max(...powerData.map(d => d.value)) / 10) * 10 : 30;
                     const zeroY = graphHeight - (( - minValue) / (maxValue - minValue) * graphHeight);
                     const minDate = Math.min(...powerData.map(d => d.date));
                     const maxDate = Math.max(...powerData.map(d => d.date));
                     const xAxesCount = (maxValue - minValue) / 10;
                     const xAxes = new Array(xAxesCount).fill(0).map((x,i) => graphHeight - (i / xAxesCount * graphHeight));
                     const yAxes = new Array(powerData.length).fill(0).map((x, i) => i / (powerData.length) * (graphWidth + graphWidth / powerData.length))
-                    const forecastPowerGraphData = processGraphData(forecastPowerData, graphWidth, graphHeight, minValue, maxValue, minDate, maxDate);
-                    const realizedPowerGraphData = processGraphData(realizedPowerData, graphWidth, graphHeight, minValue, maxValue, minDate, maxDate);
-                    // setMinValue(minValue);
-                    // setMaxValue(maxValue);
-                    // setMinDate(minDate);
-                    // setMaxDate(maxDate);
+                    
+                    const realizedPowerData = powerData.filter((d) => d.date < new Date().getTime())
+                    const forecastPowerData = powerData.filter((d) => d.date >= new Date().getTime() - 1000 * 60 * 60)
+                    const forecastPowerGraphData = PowerService.processGraphData(forecastPowerData, graphWidth, graphHeight, minValue, maxValue, minDate, maxDate);
+                    const realizedPowerGraphData = PowerService.processGraphData(realizedPowerData, graphWidth, graphHeight, minValue, maxValue, minDate, maxDate);
+
                     setGraphDims({ width: graphWidth, height: graphHeight, zeroY })
                     setXAxes(xAxes);
                     setYAxes(yAxes);
-                    // setPowerData(powerData)
-                    // setGraphData(graphData)
-                    setPowerForecast(getForecastGraphDef(forecastPowerGraphData))
-                    setPowerRealized(getRealizedGraphDef(realizedPowerGraphData, zeroY))
+                    setPowerForecast(PowerService.getForecastPath(forecastPowerGraphData))
+                    setPowerRealized(PowerService.getRealizedPath(realizedPowerGraphData, zeroY))
                 }
             })
-    }
-
-    const processPowerData = function(data: SahkotinPowerData): PowerDatum[] {
-        if (data && data.prices) {
-            return data.prices.map((d) => ({
-                date: new Date(d.date).getTime(),
-                value: Math.round(d.value * 10) / 100,
-            }))
-        }
-        return [];
-    }
-
-    const processGraphData = function(
-        data: PowerDatum[],
-        graphWidth: number,
-        graphHeight: number,
-        minValue:number,
-        maxValue:number,
-        minDate:number,
-        maxDate:number
-        ): GraphDatum[] {
-            const graphData = [];
-            for (const d of data) {
-                graphData.push(
-                    {
-                        x: (new Date(d.date).getTime() - minDate) / (maxDate - minDate) * graphWidth,
-                        y: graphHeight - ((d.value - minValue) / (maxValue - minValue) * graphHeight),
-                    })
-            }
-
-        return graphData;
-    }
-
-    const getRealizedGraphDef = function(data: GraphDatum[], zeroY: number ): string {
-        let graphDef = `M${data[0].x} ${zeroY} L${data[0].x} ${data[0].y} `;
-        graphDef += pathTransform(data)
-        graphDef += `L${data[data.length - 1].x} ${zeroY}`;
-        return graphDef;
-    }
-
-    const getForecastGraphDef = function(data: GraphDatum[]): string {
-        let graphDef = `M${data[0].x} ${data[0].y} `;
-        graphDef += pathTransform(data)
-        return graphDef;
-    }
-
-    function pathTransform(data: GraphDatum[]) {
-        let graphDef = '';
-        data.forEach((d, i) => {
-            if (i < data.length - 1) {
-                graphDef += `L${d.x} ${d.y} L${data[i + 1].x} ${d.y} `
-            }
-        })
-        return graphDef;
     }
 
     useEffect(() => {
@@ -131,12 +65,10 @@ export default function Power() {
         <div className="power-graph">
         {error ? <h4>{error}</h4> : ''}
         <svg ref={svgRef} width="100%">
-            <g className="realized-path">
-                <path d={powerRealized} className="graph-line realized"/>
-            </g>
+            <path d={powerRealized} className="graph-line realized"/>
             <g className="y-axes">
                 { yAxes.map((x, i) => (
-                    <line key={i} className="graph-axis" x1={x} y1="0" x2={x} y2={svgRef.current?.clientHeight} />
+                    <line key={i} className="graph-axis" x1={x} y1="0" x2={x} y2={graphDims.height} />
                     ))}
             </g>
             <line className="graph-axis strong" x1="0" y1={graphDims.zeroY} x2={graphDims.width} y2={graphDims.zeroY} />

@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="main-container">
       <div className="left">
-        <Weather />
+        {/* <Weather /> */}
         <Power />
         </div>
       <div className="middle"></div>

@@ -27,7 +27,7 @@ const PowerService = {
                 graphData.push(
                     {
                         x: (new Date(d.date).getTime() - minDate) / (maxDate - minDate) * graphWidth + paddingLeft,
-                        y: graphHeight - ((d.value - minValue) / (maxValue - minValue) * graphHeight) + paddingBottom,
+                        y: graphHeight - ((d.value - minValue) / (maxValue - minValue) * graphHeight),
                     })
             }
 

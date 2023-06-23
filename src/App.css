@@ -71,14 +71,22 @@
   margin-top: 2vw;
 }
 
-.x-axes .graph-axis {
+.graph-axis {
   opacity: 0.5;
   stroke: #888;
 }
 
-.y-axes .graph-axis {
-  opacity: 0.5;
-  stroke: #000;
+.x-axes .x-label {
+  text-anchor: end;
+  fill: #FFF;
+  font-size: 1.67vw;
+  dominant-baseline: central;
+}
+.y-axes .y-label {
+  fill: #FFF;
+  font-size: 1.67vw;
+  text-anchor: middle;
+
 }
 
 .graph-axis.strong {

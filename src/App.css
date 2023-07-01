@@ -34,14 +34,29 @@
   margin-bottom: 6vw;
 }
 
+.current-container {
+  display: flex;
+  flex-direction: row;
+}
+
 .current-weather {
-  font-size: 10vw;
+  font-size: 8.5vw;
   line-height: 12vw;
+  flex-grow: 1;
 }
 
 .current-weather > .wi {
-  font-size: 9vw;
+  font-size: 8vw;
   margin-right: 1vw;
+  vertical-align: middle;
+}
+
+.weather-warnings {
+  display: flex;
+  flex-direction: column;
+  font-size: 3.5vw;
+  align-items: center;
+  justify-content: center;
 }
 
 .forecast {
@@ -75,7 +90,7 @@
 }
 
 .graph-axis {
-  opacity: 0.5;
+  opacity: 0.75;
   stroke: #888;
 }
 

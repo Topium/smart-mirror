@@ -86,6 +86,11 @@ interface List {
   pop: number;
   sys: Sys;
   dt_txt: string;
+  rain? : Rain;
+}
+
+interface Rain {
+    [key: string]: number
 }
 
 interface Sys {

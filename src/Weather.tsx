@@ -7,6 +7,8 @@ export default function Weather() {
     const [currentTemp, setCurrentTemp] = useState(0)
     const [currentWeather, setCurrentWeather] = useState('')
     const [forecast, setForecast] = useState<Forecast[]>([])
+    const [isRainy, setIsRainy] = useState<boolean>(true)
+    const [isWindy, setIsWindy] = useState<boolean>(true)
 
     function fetchWeather() {
         const weatherUrl = 'http://api.openweathermap.org/data/2.5/weather';
@@ -30,7 +32,10 @@ export default function Weather() {
                 return response.json();
             })
             .then(data => {
+                console.log('weatherdata', data)
                 setForecast(getForecast(data))
+                setIsRainy(getIsRainy(data));
+                setIsWindy(getIsWindy(data));
             })
     }
 
@@ -116,6 +121,14 @@ export default function Weather() {
         return weatherClass;
     }
 
+    function getIsRainy(data: OWMForecast): boolean {
+      return data.list.slice(0, 3).some(x => x.rain)
+    }
+
+    function getIsWindy(data: OWMForecast): boolean {
+      return data.list.slice(0, 3).some(x => x.wind.speed >= 6)
+    }
+
     useEffect(() => {
         fetchWeather();
         fetchForecast();
@@ -127,9 +140,15 @@ export default function Weather() {
 
     return (
         <div className="weather-container">
-            <div className="current-weather">
-                <i className={`wi ${currentWeather}`}></i>
-                <span className="current-temp">{Math.round(currentTemp)}°</span>
+            <div className="current-container">
+              <div className="current-weather">
+                  <i className={`wi ${currentWeather}`}></i>
+                  <span className="current-temp">{Math.round(currentTemp)}°</span>
+              </div>
+              <div className="weather-warnings">
+                { isRainy ? <i className="wi wi-umbrella"></i> : ''}
+                { isWindy ? <i className="wi wi-strong-wind"></i> : ''}
+              </div>
             </div>
             <ul className="forecast">
                 {forecast.map((f, i) => (

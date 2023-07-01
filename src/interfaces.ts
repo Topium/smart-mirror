@@ -152,6 +152,7 @@ export interface GraphDatum {
 export interface GraphDims {
     width: number;
     height: number;
+    paddingTop: number;
     paddingLeft: number;
     paddingBottom: number;
     zeroY: number;

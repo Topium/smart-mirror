@@ -21,13 +21,14 @@ const PowerService = {
         maxDate: number,
         paddingLeft: number,
         paddingBottom: number,
+        paddingTop: number,
         ): GraphDatum[] {
             const graphData = [];
             for (const d of data) {
                 graphData.push(
                     {
                         x: (new Date(d.date).getTime() - minDate) / (maxDate - minDate) * graphWidth + paddingLeft,
-                        y: graphHeight - ((d.value - minValue) / (maxValue - minValue) * graphHeight),
+                        y: graphHeight + paddingTop - ((d.value - minValue) / (maxValue - minValue) * graphHeight),
                     })
             }
 

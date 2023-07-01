@@ -126,7 +126,7 @@ export default function Weather() {
     }, [])
 
     return (
-        <div className="weather">
+        <div className="weather-container">
             <div className="current-weather">
                 <i className={`wi ${currentWeather}`}></i>
                 <span className="current-temp">{Math.round(currentTemp)}°</span>

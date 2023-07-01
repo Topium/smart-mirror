@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react"
 import { GraphDims, SahkotinPowerData } from "./interfaces"
-import { powerDataGenerator } from "./powerTestData"
 import PowerService from "./power.service";
 
 export default function Power() {
@@ -18,7 +17,7 @@ export default function Power() {
     const fetchPowerData = function(start: string, end: string) {
         const powerUrl = 'https://sahkotin.fi/prices?vat';
         fetch(powerUrl + '&start=' + start + "&end=" + end)
-        // powerDataGenerator(-100, 210)
+        // powerDataGenerator(-100, 300)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -32,23 +31,29 @@ export default function Power() {
                     const powerData = PowerService.processPowerData(result);
 
                     const paddingTop = 8;
-                    const paddingLeft = 28;
-                    const paddingBottom = 16;
+                    const paddingLeft = 36;
+                    const paddingBottom = 24;
                     const graphHeight = svgRef.current ? svgRef.current.clientHeight - paddingBottom - paddingTop : 0;
                     const graphWidth = svgRef.current ? svgRef.current.clientWidth - paddingLeft : 0;
-                    const minValue = Math.floor(Math.min(...powerData.map(d => d.value)) / 10 - 0.5) * 10;
-                    const maxValue = Math.max(...powerData.map(d => d.value)) > 20 ? Math.ceil(Math.max(...powerData.map(d => d.value)) / 10 + 0.5) * 10 : 20;
+                    const minValue = Math.floor(Math.min(...powerData.map(d => d.value)) / 10 - 0.1) * 10;
+                    const maxValue = Math.max(...powerData.map(d => d.value)) > 20 ? Math.ceil(Math.max(...powerData.map(d => d.value)) / 10 + 0.1) * 10 : 20;
                     const zeroY = graphHeight + paddingTop + (minValue / (maxValue - minValue) * graphHeight);
                     const minDate = Math.min(...powerData.map(d => d.date));
                     const maxDate = Math.max(...powerData.map(d => d.date));
                     const xAxesCount = Math.ceil((maxValue - minValue) / 10);
-                    const xAxes = new Array(xAxesCount + 1).fill(0).map((x,i) => { return { y: graphHeight + paddingTop - (i / xAxesCount * graphHeight), value: minValue + i * 10 } });
-                    const yAxes = new Array(powerData.length).fill(0).map((x, i) => { return { x: i / (powerData.length) * (graphWidth + graphWidth / powerData.length), value : powerData[i].date } });
+                    const xAxes = new Array(xAxesCount + 1).fill(0).map((x, i) => {
+                        x;
+                        return { y: graphHeight + paddingTop - (i / xAxesCount * graphHeight), value: minValue + i * 10 }
+                    });
+                    const yAxes = new Array(powerData.length).fill(0).map((x, i) => {
+                        x;
+                        return { x: i / (powerData.length) * (graphWidth + graphWidth / powerData.length), value : powerData[i].date }
+                    });
                     
                     const realizedPowerData = powerData.filter((d) => d.date < new Date().getTime())
                     const forecastPowerData = powerData.filter((d) => d.date >= new Date().getTime() - 1000 * 60 * 60)
-                    const forecastPowerGraphData = PowerService.processGraphData(forecastPowerData, graphWidth, graphHeight, minValue, maxValue, minDate, maxDate, paddingLeft, paddingBottom, paddingTop);
-                    const realizedPowerGraphData = PowerService.processGraphData(realizedPowerData, graphWidth, graphHeight, minValue, maxValue, minDate, maxDate, paddingLeft, paddingBottom, paddingTop);
+                    const forecastPowerGraphData = PowerService.processGraphData(forecastPowerData, graphWidth, graphHeight, minValue, maxValue, minDate, maxDate, paddingLeft, paddingTop);
+                    const realizedPowerGraphData = PowerService.processGraphData(realizedPowerData, graphWidth, graphHeight, minValue, maxValue, minDate, maxDate, paddingLeft, paddingTop);
 
                     setGraphDims({ width: graphWidth, height: graphHeight, paddingTop, paddingBottom, paddingLeft, zeroY })
                     setXAxes(xAxes);
@@ -69,7 +74,7 @@ export default function Power() {
     return (
         <div className="power-graph">
         {error ? <h4>{error}</h4> : ''}
-        <svg ref={svgRef} width="100%">
+        <svg ref={svgRef} width="100%" height="13vw">
             <path d={powerRealized} className="graph-line realized"/>
             <line className="graph-axis strong" x1={graphDims.paddingLeft} y1={graphDims.zeroY} x2={graphDims.width + graphDims.paddingLeft} y2={graphDims.zeroY} />
             <path d={powerForecast} className="graph-line forecast"/>

@@ -11,8 +11,8 @@ export default function Clock() {
 
     return(
     <>
-        <div className="time">{time.toLocaleTimeString().slice(0, -3)}</div>
-        <div className="date">{days[time.getDay()]} {time.toLocaleDateString()}</div>
+        <div className="time">{time.toLocaleTimeString('fi-FI').slice(0, -3)}</div>
+        <div className="date">{days[time.getDay()]} {time.toLocaleDateString('fi-FI')}</div>
     </>
     )
 }

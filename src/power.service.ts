@@ -20,7 +20,6 @@ const PowerService = {
         minDate: number,
         maxDate: number,
         paddingLeft: number,
-        paddingBottom: number,
         paddingTop: number,
         ): GraphDatum[] {
             const graphData = [];

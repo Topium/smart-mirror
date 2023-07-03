@@ -3,7 +3,7 @@ import { useState } from "react"
 export default function Clock() {
     const [time, setTime] = useState(new Date())
 
-    const days: string[] = ['Ma', 'Ti', 'Ke', 'To', 'Pe', 'La', 'Su']
+    const days: string[] = ['Su', 'Ma', 'Ti', 'Ke', 'To', 'Pe', 'La']
 
     setTimeout(() => {
         setTime(new Date());
@@ -11,7 +11,7 @@ export default function Clock() {
 
     return(
     <>
-        <div className="time">{time.toLocaleTimeString('fi-FI').slice(0, -3)}</div>
+        <div className="time">{time.toLocaleTimeString('en-UK').slice(0, -3)}</div>
         <div className="date">{days[time.getDay()]} {time.toLocaleDateString('fi-FI')}</div>
     </>
     )

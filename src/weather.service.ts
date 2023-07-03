@@ -4,16 +4,18 @@ const WeatherService = {
     getForecast: function(data: OWMForecast): Forecast[] {
         const sunrise = data.city.sunrise;
         const sunset = data.city.sunset;
-        return data.list.map((d) => (
-            {
-                time: d.dt_txt.slice(-8, -3),
-                temp: Math.round(d.main.temp),
-                weatherId: d.weather[0].id,
-                weather: d.weather[0].main,
-                gust: d.wind.gust,
-                iconClass: this.getWeatherIconClass(d.weather[0].id, d.dt, sunset, sunrise)
-            }
-        )).slice(0, 5)
+        return data.list.filter(d => d.dt * 1000 > new Date().getTime())
+            .slice(0,5)
+            .map((d) => (
+                    {
+                        time: new Date(d.dt * 1000).toLocaleTimeString('en-UK').slice(0, -3),
+                        temp: Math.round(d.main.temp),
+                        weatherId: d.weather[0].id,
+                        weather: d.weather[0].main,
+                        gust: d.wind.gust,
+                        iconClass: this.getWeatherIconClass(d.weather[0].id, d.dt, sunset, sunrise)
+                    }
+                ))
     },
 
     getWeatherIconClass: function(id:number, iconTime:number, sunset:number, sunrise:number) {

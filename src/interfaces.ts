@@ -157,8 +157,15 @@ export interface GraphDatum {
 export interface GraphDims {
     width: number;
     height: number;
-    paddingTop: number;
     paddingLeft: number;
+    paddingTop: number;
     paddingBottom: number;
     zeroY: number;
+}
+
+export interface GraphLimits {
+    minValue: number,
+    maxValue: number,
+    minDate: number,
+    maxDate: number
 }

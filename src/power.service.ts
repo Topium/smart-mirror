@@ -1,4 +1,4 @@
-import { GraphDatum, PowerDatum, SahkotinPowerData } from "./interfaces";
+import { GraphDatum, GraphDims, PowerDatum, SahkotinPowerData } from "./interfaces";
 
 const PowerService = {
     processPowerData: function(data: SahkotinPowerData): PowerDatum[] {
@@ -13,21 +13,18 @@ const PowerService = {
 
     processGraphData: function(
         data: PowerDatum[],
-        graphWidth: number,
-        graphHeight: number,
+        graphDims: GraphDims,
         minValue: number,
         maxValue: number,
         minDate: number,
         maxDate: number,
-        paddingLeft: number,
-        paddingTop: number,
         ): GraphDatum[] {
             const graphData = [];
             for (const d of data) {
                 graphData.push(
                     {
-                        x: (new Date(d.date).getTime() - minDate) / (maxDate - minDate) * graphWidth + paddingLeft,
-                        y: graphHeight + paddingTop - ((d.value - minValue) / (maxValue - minValue) * graphHeight),
+                        x: (new Date(d.date).getTime() - minDate) / (maxDate - minDate) * graphDims.width + graphDims.paddingLeft,
+                        y: graphDims.height + graphDims.paddingTop - ((d.value - minValue) / (maxValue - minValue) * graphDims.height),
                     })
             }
 
@@ -57,6 +54,11 @@ const PowerService = {
         return graphDef;
     },
 
+    isPowerData: function(data: SahkotinPowerData): boolean {
+        return Object.prototype.hasOwnProperty.call(data, 'prices') &&
+            Object.prototype.hasOwnProperty.call(data.prices[0], 'date') &&
+            Object.prototype.hasOwnProperty.call(data.prices[0], 'value');
+    }
 }
 
 export default PowerService

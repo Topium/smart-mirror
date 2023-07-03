@@ -21,13 +21,14 @@
 }
 
 .time {
-  font-size: 10vw;
-  line-height: 12vw;
+  font-size: 9vw;
+  line-height: 9vw;
+  font-weight: 300;
 }
 
 .date {
   font-size: 3.5vw;
-  line-height: 3vw;
+  line-height: 4vw;
 }
 
 .weather-container {
@@ -71,7 +72,7 @@
 }
 
 .forecast .temp {
-  font-size: 2vw;
+  font-size: 1.8vw;
   line-height: 2vw;
   font-weight: 600;
 }
@@ -82,8 +83,9 @@
 }
 
 .forecast .time {
-  font-size: 1.5vw;
-  line-height: 2vw;
+  font-size: 1.33vw;
+  line-height: 3vw;
+  font-weight: 600;
 }
 
 .power-graph {
@@ -98,12 +100,12 @@
 .x-axes .x-label {
   text-anchor: end;
   fill: #FFF;
-  font-size: 1.25vw;
+  font-size: 1.2vw;
   dominant-baseline: central;
 }
 .y-axes .y-label {
   fill: #FFF;
-  font-size: 1.25vw;
+  font-size: 1.2vw;
   text-anchor: middle;
 
 }
@@ -114,6 +116,7 @@
 
 .graph-line {
   stroke: #FFF;
+  stroke-width: 2;
   fill: none;
 }
 

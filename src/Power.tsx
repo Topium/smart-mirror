@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from "react"
-import { GraphDims, SahkotinPowerData } from "./interfaces"
+import { GraphDims, GraphLimits, PowerDatum, SahkotinPowerData } from "./interfaces"
 import PowerService from "./power.service";
 
 export default function Power() {
     const [error, setError] = useState<string>('')
     const [xAxes, setXAxes] = useState<{y: number, value: number}[]>([])
     const [yAxes, setYAxes] = useState<{x: number, value: number}[]>([])
+    const [powerData, setPowerData] = useState<PowerDatum[]>([])
     const [powerRealized, setPowerRealized] = useState<string>('')
     const [powerForecast, setPowerForecast] = useState<string>('')
-
-
     const [graphDims, setGraphDims] = useState<GraphDims>({width: 0, height: 0, paddingTop: 0, paddingBottom: 0, paddingLeft: 0, zeroY: 0})
+    const [graphLimits, setGraphLimits] = useState<GraphLimits>({minValue: 0, maxValue: 0, minDate: 0, maxDate: 0})
 
     const svgRef = useRef<SVGSVGElement>(null)
 
@@ -27,8 +27,9 @@ export default function Power() {
                 }
             })
             .then((result: SahkotinPowerData | null) => {
-                if (result !== null) {
+                if (result !== null && PowerService.isPowerData(result)) {
                     const powerData = PowerService.processPowerData(result);
+                    setPowerData(powerData);
 
                     const paddingTop = 8;
                     const paddingLeft = 36;
@@ -49,27 +50,42 @@ export default function Power() {
                         x;
                         return { x: i / (powerData.length) * (graphWidth + graphWidth / powerData.length), value : powerData[i].date }
                     });
-                    
-                    const realizedPowerData = powerData.filter((d) => d.date < new Date().getTime())
-                    const forecastPowerData = powerData.filter((d) => d.date >= new Date().getTime() - 1000 * 60 * 60)
-                    const forecastPowerGraphData = PowerService.processGraphData(forecastPowerData, graphWidth, graphHeight, minValue, maxValue, minDate, maxDate, paddingLeft, paddingTop);
-                    const realizedPowerGraphData = PowerService.processGraphData(realizedPowerData, graphWidth, graphHeight, minValue, maxValue, minDate, maxDate, paddingLeft, paddingTop);
 
-                    setGraphDims({ width: graphWidth, height: graphHeight, paddingTop, paddingBottom, paddingLeft, zeroY })
+                    const graphDims = { width: graphWidth, height: graphHeight, paddingTop, paddingBottom, paddingLeft, zeroY }
+                    const graphLimits = { minValue, maxValue, minDate, maxDate };
+
+                    setGraphDims(graphDims)
+                    setGraphLimits(graphLimits)
                     setXAxes(xAxes);
                     setYAxes(yAxes);
-                    setPowerForecast(PowerService.getForecastPath(forecastPowerGraphData))
-                    setPowerRealized(PowerService.getRealizedPath(realizedPowerGraphData, zeroY))
+                    refreshGraph(powerData, graphDims, graphLimits)
                 }
             })
     }
 
-    useEffect(() => {
+    const refreshGraph = function (powerData: PowerDatum[], graphDims: GraphDims, graphLimits: GraphLimits) {
+        if (powerData.length) {
+            const realizedPowerData = powerData.filter((d) => d.date < new Date().getTime())
+            const forecastPowerData = powerData.filter((d) => d.date >= new Date().getTime() - 1000 * 60 * 60)
+            const forecastPowerGraphData = PowerService.processGraphData(forecastPowerData, graphDims, graphLimits.minValue, graphLimits.maxValue, graphLimits.minDate, graphLimits.maxDate);
+            const realizedPowerGraphData = PowerService.processGraphData(realizedPowerData, graphDims, graphLimits.minValue, graphLimits.maxValue, graphLimits.minDate, graphLimits.maxDate);
+            setPowerForecast(PowerService.getForecastPath(forecastPowerGraphData))
+            setPowerRealized(PowerService.getRealizedPath(realizedPowerGraphData, graphDims.zeroY))
+        }
+    }
+
+    const powerDataTimer = function () {
         const start = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
         const end = new Date(new Date().setHours(47, 59, 59, 999)).toISOString();
         fetchPowerData(start, end)
-        setInterval(() => fetchPowerData(start, end), 60 * 60 * 1000)
+    }
+
+    useEffect(() => {
+        powerDataTimer();
     }, [])
+
+    setInterval(() => powerDataTimer(), 60 * 60 * 1000)
+    setInterval(() => refreshGraph(powerData, graphDims, graphLimits), 60 * 1000)
 
     return (
         <div className="power-graph">
